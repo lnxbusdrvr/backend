@@ -6,6 +6,8 @@ const app = express();
 // json-parseri
 app.use(express.json());
 app.use(cors());
+// käytetään stattisia sivuja(frontista tuotua)
+app.use(express.static('dist'))
 
 // Määritellään customoitumorgan nimeltään
 // data
