@@ -20,7 +20,7 @@ let notes = [  {    id: "1",    content: "HTML is easy",    important: true  }, 
 
 // GET
 app.get('/', (request, response) => {
-  response.send('<h1>Hello Maailma!</h1>');
+  response.send('<h1>Hello Internet!</h1>');
 });
 
 // GET
