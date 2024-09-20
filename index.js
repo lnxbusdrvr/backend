@@ -20,6 +20,9 @@ const errorsHandler = (error, request, response, next) => {
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
   }
+  else if (error.name === 'ValidationError') {
+    return response.status(400).json({ error: error.message })
+  }
 
   next(error)
 }
@@ -63,7 +66,6 @@ app.get('/api/notes/:id', (request, response, next) => {
     })
     .catch(error => next(error))
 });
-
 
 app.delete('/api/notes/:id', (request, response, next) => {
   Note.findByIdAndDelete(request.params.id)
