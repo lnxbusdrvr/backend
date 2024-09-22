@@ -75,12 +75,8 @@ app.delete('/api/notes/:id', (request, response, next) => {
     .catch(error => next(error))
 });
 
-app.post('/api/notes', (request, response) => {
+app.post('/api/notes', (request, response, next) => {
   const body = request.body;
-
-  // Varmistetaan, että kentässä "content" on läsnä
-  if (!body.content)
-    return response.status(400).json({ error: 'content missing' });
 
   // Luodaan uusi Note-olio MongoDB:hen tallennettavaksi
   const note = new Note({
@@ -93,15 +89,11 @@ app.post('/api/notes', (request, response) => {
     .then(savedNote => {
       response.json(savedNote);
     })
+    .catch(error => next(error)) //-> virheenkäsittelijälle
 });
 
-app.put('/api/notes/:id', (request, response) => {
-  const body  = request.body;
-
-  const note = {
-    content: body.content,
-    important: body.important,
-  };
+app.put('/api/notes/:id', (request, response, next) => {
+  const { content, number } = request.body;
 
   /* Päivitetään dokumentti ID:n perusteella
    * ID haetaan URL-parametreista
@@ -109,7 +101,10 @@ app.put('/api/notes/:id', (request, response) => {
    * { new, true }  Asetus, joka palauttaa päivitetyn dokumentin
    */
   Note
-    .findByIdAndUpdate(request.params.id, note,{ new: true })
+    .findByIdAndUpdate(
+      request.params.id,
+      { content, number },
+      { new: true, runValidators: true, context: 'query' })
     .then(updatedNote => {
       response.json(updatedNote);
     })
